@@ -46,16 +46,20 @@ sudo rm -rf work/
 # 3. Create output directory if it doesn't exist
 mkdir -p ../ISO
 
-# 4. Setup environment variables for pacman
+# 4. Generate build info and serial
+echo "📝 Generating build metadata..."
+./generate-build-info.sh
+
+# 5. Setup environment variables for pacman
 export PACMAN_OPTS="--overwrite '*'"
 export ARCH
 
-# 5. Run the build using the colorful wrapper
+# 6. Run the build using the colorful wrapper
 echo "🚀 Starting AcreetionOS MATE Build for $ARCH..."
 sudo -E ./mkarchiso_wrapper -L AcreetionOS-MATE -v -o ../ISO . -C ./pacman.${ARCH}.conf -j $(nproc)
 
-# 6. Final check
-ISO_NAME="AcreetionOS-MATE-1.0-${ARCH}.iso"
+# 7. Final check
+ISO_NAME="AcreetionOS-Lite-1.0-${ARCH}.iso"
 if [ -f "../ISO/$ISO_NAME" ]; then
     echo "✅ Build Successful!"
     ls -lh "../ISO/$ISO_NAME"

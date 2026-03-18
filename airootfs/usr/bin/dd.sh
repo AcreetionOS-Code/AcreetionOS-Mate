@@ -1,11 +1,20 @@
 #!/bin/bash
 /usr/bin/acreetion-welcome.sh &
 
-dconf load / < /mate.dconf
-dconf load /org/mate/terminal/ < /terminal-settings
+# Apply MATE desktop settings
+dconf load / < /etc/mate_settings.dconf
+dconf load /org/mate/terminal/ < /etc/terminal-settings
 
-cp /usr/bin/pacman2 /usr/bin/pacman
+# Setup pacman
+if [ -f /usr/bin/pacman2 ]; then
+    cp /usr/bin/pacman2 /usr/bin/pacman
+fi
 
-rm $HOME/.config/autostart/dd.desktop
-cp /mate-configs/.bashrc /root
+# Cleanup autostart for this user
+if [ -f "$HOME/.config/autostart/dd.desktop" ]; then
+    rm "$HOME/.config/autostart/dd.desktop"
+fi
 
+# Ensure root has the latest shell configs
+cp /etc/skel/.bashrc /root/
+cp /etc/skel/.zshrc /root/

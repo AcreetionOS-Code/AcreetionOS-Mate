@@ -34,8 +34,7 @@ The project uses a highly optimized **MATE Desktop** to provide a modern, "Cinna
 
 | Component | Path | Description |
 |-----------|------|-------------|
-| System Dconf | `airootfs/mate_settings.dconf` | Master settings for themes, layout, and performance (no animations). |
-| Live User Dconf | `airootfs/mate.dconf` | Applied to the live session to ensure immediate "Acreetion Look." |
+| System Dconf | `airootfs/etc/mate_settings.dconf` | Master settings for themes, layout, and performance (no animations). |
 | Home Configs | `airootfs/mate-configs/` | Skeleton configs copied to the installed user's home directory. |
 | File Manager | `caja` | Lightweight alternative to Nemo. |
 | App Menu | `brisk-menu` | Search-centric menu mirroring the Cinnamon experience. |

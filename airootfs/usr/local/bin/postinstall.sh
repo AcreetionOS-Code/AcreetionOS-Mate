@@ -38,31 +38,13 @@ mkdir /home/$name/.config/autostart
 cp -r /mate-configs/dd.desktop /home/$name/.config/autostart
 
 chown -R $name:$name /home/$name/.config
-chown -R $name:$name /middle.png
-#mv /middle.png /home/$USER
 
-cp -r /mate-configs/.bashrc /home/$name/.bashrc
-cp -r /mate-configs/.bashrc /root
-cp -r /mate-configs/AcreetionOS.txt /root
-cp -r /mate-configs/AcreetionOS.txt /home/$name/AcreetionOS.txt
-
-mv /resolv.conf /etc/resolv.conf
-chattr +i /etc/resolv.conf
-chattr +i /etc/os-release
-
-# create python fix!
-
-#mkdir -p /usr/lib/python3.13/site-packages/six
-#touch /usr/lib/python3.13/site-packages/six/__init__.py
-#cp /usr/lib/python3.12/site-packages/six.py /usr/lib/python3.13/site-packages/six/six.py
-
-# cp /archiso.conf /etc/mkinitcpio.conf.d/archiso.conf
-
-# mkdir /home/$name/.local/share/mate
-
-# cp -r /mate-configs/mate-stuff/extensions /home/$name/.local/share/mate/
-
-cp /mate-configs/AcreetionOS.txt /home/$name/
+cp -r /etc/skel/.bashrc /home/$name/.bashrc
+cp -r /etc/skel/.bashrc /root
+cp -r /etc/skel/.zshrc /home/$name/.zshrc
+cp -r /etc/skel/.zshrc /root
+cp -r /etc/AcreetionOS.txt /root
+cp -r /etc/AcreetionOS.txt /home/$name/AcreetionOS.txt
 
 mkdir -p /usr/share/backgrounds
 cp -r /backgrounds /usr/share/backgrounds
@@ -77,7 +59,6 @@ cp /etc/pacman2.conf pacman.conf
 cp /mkinitcpio/mkinitcpio.conf /etc/mkinitcpio.conf
 # Don't copy archiso.conf - it's only for the live ISO
 # cp /mkinitcpio/archiso.conf /etc/mkinitcpio.conf.d/archiso.conf
-cp /mate-configs/.nanorc /home/$name/.nanorc
 
 # Create placeholder dm-initramfs.rules for archiso hook compatibility
 # mkdir -p /usr/lib/initcpio/udev
@@ -91,8 +72,6 @@ rm -rf /mkinitcpio
 rm -rf mate-configs
 
 #sudo pacman -S updater --noconfirm --overwrite '*'
-
-chown $name:$name /home/$name/.nanorc
 
 # copy the new pacman over full of color!
 

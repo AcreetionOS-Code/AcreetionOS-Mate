@@ -22,7 +22,7 @@ echo "This will launch archinstall with a customized AcreetionOS profile."
 # We'll pre-set our repository name if possible.
 
 # Define essential AcreetionOS packages to ensure they are installed
-EXTRA_PACKAGES="mate mate-extra brisk-menu arc-gtk-theme papirus-icon-theme lightdm lightdm-gtk-greeter zram-generator earlyoom preload pamac-gtk3"
+EXTRA_PACKAGES="mate mate-extra brisk-menu papirus-icon-theme lightdm lightdm-gtk-greeter zram-generator earlyoom preload pamac-gtk3"
 
 sudo archinstall \
     --disk_layouts '{"/dev/sda": {"partitions": [{"mountpoint": "/", "size": "100%", "type": "primary", "filesystem": "ext4", "boot": true}]}}' \

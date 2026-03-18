@@ -27,7 +27,8 @@ efibootmgr
 os-prober
 plymouth
 intel-ucode
-#amd-ucode
+amd-ucode
+mkinitcpio-firmware
 
 # [Subcategory: Filesystem Support]
 dosfstools
@@ -83,6 +84,7 @@ xorg
 mesa
 mesa-utils
 glu
+numlockx
 
 # [Subcategory: Drivers]
 xf86-video-amdgpu
@@ -162,9 +164,10 @@ cups                    # Printing support
 # 8. THEMES, ICONS & FONTS
 #===============================================================================
 # [Subcategory: Appearance]
-arc-gtk-theme           # Default dark theme (Low overhead)
 papirus-icon-theme      # Modern, comprehensive icon set
 adwaita-icon-theme      # Fallback icons
+qt5ct                   # Qt5 Configuration Tool
+qt6ct                   # Qt6 Configuration Tool
 
 # [Subcategory: Typography]
 gnu-free-fonts

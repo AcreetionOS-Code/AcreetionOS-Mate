@@ -33,21 +33,14 @@ cp -r /mate-configs/dd.desktop /home/$name/.config/autostart
 
 echo "Setting file ownership for user configuration..."
 chown -R $name:$name /home/$name/.config
-chown -R $name:$name /middle.png
 
 echo "Copying shell and system configuration files..."
-cp -r /mate-configs/.bashrc /home/$name/.bashrc
-cp -r /mate-configs/.bashrc /root
-cp -r /mate-configs/AcreetionOS.txt /root
-cp -r /mate-configs/AcreetionOS.txt /home/$name/AcreetionOS.txt
+cp -r /etc/skel/.bashrc /home/$name/.bashrc
+cp -r /etc/skel/.zshrc /home/$name/.zshrc
+cp -r /etc/skel/.bashrc /root/
+cp -r /etc/skel/.zshrc /root/
 
 echo "Configuring system DNS and file attributes..."
-mv /resolv.conf /etc/resolv.conf
-chattr +i /etc/resolv.conf
-chattr +i /etc/os-release
-
-echo "Copying AcreetionOS documentation..."
-cp /mate-configs/AcreetionOS.txt /home/$name/
 
 echo "Setting up system backgrounds..."
 mkdir -p /usr/share/backgrounds
@@ -61,12 +54,11 @@ echo "Updating system configuration files..."
 cp /mkinitcpio/mkinitcpio.conf /etc/mkinitcpio.conf
 # Don't copy archiso.conf - it's only for the live ISO
 # cp /mkinitcpio/archiso.conf /etc/mkinitcpio.conf.d/archiso.conf
-cp /mate-configs/.nanorc /home/$name/.nanorc
 
 # Create placeholder dm-initramfs.rules for archiso hook compatibility
 mkdir -p /usr/lib/initcpio/udev
 echo "# Placeholder file for archiso hook compatibility" > /usr/lib/initcpio/udev/11-dm-initramfs.rules
-echo "# dm-initramfs rules not needed since lvm2 is not included in this ISO" >> /usr/lib/initcpio/udev/11-dm-initramfs.rules
+echo "# dm-initramfs rules included for lvm2 and mdadm support" >> /usr/lib/initcpio/udev/11-dm-initramfs.rules
 
 # Remove archiso config if it exists
 rm -f /etc/mkinitcpio.conf.d/archiso.conf
