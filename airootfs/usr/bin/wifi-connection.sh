@@ -6,7 +6,7 @@
 # Function to check internet connectivity
 check_connection() {
     # Try pinging multiple sites to ensure reliable connection checking
-    if ping -c 1 archlinux.org &> /dev/null || ping -c 1 google.com &> /dev/null || ping -c 1 cloudflare.com &> /dev/null; then
+    if ping -c 1 archlinux.org &> /dev/null || ping -c 1 google.com &> /dev/null; then
         return 0
     else
         return 1

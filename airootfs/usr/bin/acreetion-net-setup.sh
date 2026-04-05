@@ -4,7 +4,7 @@
 # Checks for connectivity and assists with Wired/Wireless setup
 
 check_internet() {
-    ping -c 1 1.1.1.1 &>/dev/null || ping -c 1 google.com &>/dev/null
+    ping -c 1 archlinux.org &>/dev/null || ping -c 1 google.com &>/dev/null
 }
 
 if check_internet; then
