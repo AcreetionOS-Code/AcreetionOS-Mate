@@ -125,7 +125,7 @@ jobs:
       
       - name: Upload artifacts (scheduled/manual builds)
         if: github.event_name != 'push' || !startsWith(github.ref, 'refs/tags/')
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: acreetionos-mate-${{ matrix.arch }}-${{ github.run_number }}
           path: |
