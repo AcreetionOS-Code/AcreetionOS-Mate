@@ -1,0 +1,7 @@
+[submodule "calamares-config-source"]
+	path = calamares-config-source
+	url = https://github.com/AcreetionOS-Code/calamares-config.git
+
+[submodule "airootfs/mate-configs"]
+	path = airootfs/mate-configs
+	url = https://github.com/AcreetionOS-Code/mate-configs.git
