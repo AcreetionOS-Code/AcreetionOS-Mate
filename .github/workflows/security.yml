@@ -95,12 +95,12 @@ jobs:
             # Skip comments and empty lines
             [[ $line =~ ^#.* ]] && continue
             [[ -z $line ]] && continue
-            # Strip inline comments and trailing whitespace
+            # Strip inline comments and all whitespace
             pkg="${line%%#*}"
-            pkg="${pkg%"${pkg##*[![:space:]]}"}"
+            pkg="${pkg//[[:space:]]/}"
             [[ -z $pkg ]] && continue
-            # Check for invalid characters
-            if [[ $pkg =~ [^a-zA-Z0-9_-] ]]; then
+            # Check for invalid characters (Arch package names: alphanumeric, @, ., _, +, -)
+            if [[ $pkg =~ [^a-zA-Z0-9@._+-] ]]; then
               echo "Invalid package: $pkg"
               exit 1
             fi
