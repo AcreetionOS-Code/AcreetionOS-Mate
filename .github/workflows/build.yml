@@ -1,14 +1,6 @@
 name: Build AcreetionOS MATE ISO
 
 on:
-  # Trigger on schedule (weekly)
-  schedule:
-    - cron: '0 0 * * 0'  # Every Sunday at 00:00 UTC
-  
-  # Trigger on upstream AcreetionOS releases
-  repository_dispatch:
-    types: [upstream-release]
-  
   # Manual trigger via workflow_dispatch
   workflow_dispatch:
     inputs:
