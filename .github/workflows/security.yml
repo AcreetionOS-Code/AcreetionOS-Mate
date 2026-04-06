@@ -1,7 +1,7 @@
 name: Security Scanning & Compliance
 
 env:
-  PACKAGE_ENTRY_PATTERN: '^[[:alnum:]][[:alnum:]@._+-]*$'
+  PACKAGE_ENTRY_PATTERN: '^[[:alnum:]_][[:alnum:]@._+-]*$'
 
 on:
   push:
@@ -76,8 +76,9 @@ jobs:
           echo "Checking normalized package entries..."
           declare -A seen=()
           while IFS= read -r raw_line; do
-            # Remove any inline comment content first.
-            line="${raw_line%%#*}"
+            [[ "$raw_line" =~ ^[[:space:]]*# ]] && continue
+            # Remove inline comments that start after whitespace.
+            line="$(printf '%s\n' "$raw_line" | sed -E 's/[[:space:]]+#.*$//')"
             # Trim leading whitespace.
             line="${line#"${line%%[![:space:]]*}"}"
             # Trim trailing whitespace.
@@ -117,8 +118,9 @@ jobs:
         run: |
           echo "Validating package list syntax..."
           while IFS= read -r raw_line; do
-            # Remove any inline comment content first.
-            line="${raw_line%%#*}"
+            [[ "$raw_line" =~ ^[[:space:]]*# ]] && continue
+            # Remove inline comments that start after whitespace.
+            line="$(printf '%s\n' "$raw_line" | sed -E 's/[[:space:]]+#.*$//')"
             # Trim leading whitespace.
             line="${line#"${line%%[![:space:]]*}"}"
             # Trim trailing whitespace.
