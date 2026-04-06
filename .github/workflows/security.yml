@@ -1,5 +1,8 @@
 name: Security Scanning & Compliance
 
+env:
+  PACKAGE_ENTRY_PATTERN: '^[a-zA-Z0-9@._+-]+$'
+
 on:
   push:
     branches: [main]
@@ -78,7 +81,7 @@ jobs:
             line="${line%"${line##*[![:space:]]}"}"
             [[ -z "$line" ]] && continue
 
-            if [[ ! "$line" =~ ^[a-zA-Z0-9@._+-]+$ ]]; then
+            if [[ ! "$line" =~ $PACKAGE_ENTRY_PATTERN ]]; then
               echo "Invalid package entry: $raw_line"
               exit 1
             fi
@@ -117,7 +120,7 @@ jobs:
             # Skip comments and empty lines
             [[ -z "$line" ]] && continue
             # Check for invalid characters
-            if [[ ! "$line" =~ ^[a-zA-Z0-9@._+-]+$ ]]; then
+            if [[ ! "$line" =~ $PACKAGE_ENTRY_PATTERN ]]; then
               echo "Invalid package: $raw_line"
               exit 1
             fi
