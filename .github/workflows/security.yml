@@ -1,7 +1,7 @@
 name: Security Scanning & Compliance
 
 env:
-  PACKAGE_ENTRY_PATTERN: '^[a-zA-Z0-9@._+-]+$'
+  PACKAGE_ENTRY_PATTERN: '^[[:alnum:]][[:alnum:]@._+-]*$'
 
 on:
   push:
@@ -76,13 +76,16 @@ jobs:
           echo "Checking normalized package entries..."
           declare -A seen=()
           while IFS= read -r raw_line; do
+            # Remove any inline comment content first.
             line="${raw_line%%#*}"
+            # Trim leading whitespace.
             line="${line#"${line%%[![:space:]]*}"}"
+            # Trim trailing whitespace.
             line="${line%"${line##*[![:space:]]}"}"
             [[ -z "$line" ]] && continue
 
             if [[ ! "$line" =~ $PACKAGE_ENTRY_PATTERN ]]; then
-              echo "Invalid package entry: $raw_line"
+              echo "Invalid package entry: $raw_line (must match: $PACKAGE_ENTRY_PATTERN)"
               exit 1
             fi
 
@@ -114,14 +117,17 @@ jobs:
         run: |
           echo "Validating package list syntax..."
           while IFS= read -r raw_line; do
+            # Remove any inline comment content first.
             line="${raw_line%%#*}"
+            # Trim leading whitespace.
             line="${line#"${line%%[![:space:]]*}"}"
+            # Trim trailing whitespace.
             line="${line%"${line##*[![:space:]]}"}"
             # Skip comments and empty lines
             [[ -z "$line" ]] && continue
             # Check for invalid characters
             if [[ ! "$line" =~ $PACKAGE_ENTRY_PATTERN ]]; then
-              echo "Invalid package: $raw_line"
+              echo "Invalid package: $raw_line (must match: $PACKAGE_ENTRY_PATTERN)"
               exit 1
             fi
           done < packages.x86_64
