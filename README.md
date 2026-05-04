@@ -4,6 +4,8 @@ Welcome to AcreetionOS Linux, an open-source project aimed at providing the user
 
 Download ISO here: https://acreetionos.org
 
+**Direct ISO download (latest release):** https://gitlab.acreetionos.org/AcreetionOS/acreetionos-mate/-/releases
+
 ## Project Overview
 
 AcreetionOS Linux is a community-driven effort to build a lightweight, versatile Linux distribution. AcreetionOS Linux is currently based on Arch Linux, but the future goal is to be a parallel* distribution with our own base. Our goal is to provide a solid foundation for both everyday users and developers, with a focus on simplicity, ease of use, and stability; all while keeping packages up to date.
@@ -50,7 +52,7 @@ Note: Building for non-native architectures requires `qemu-user-static` and `bin
 
 To get started with AcreetionOS Linux, you can:
 
-1. Download the latest ISO from our [Website](https://acreetionos.org)!
+1. Download the latest ISO from our [GitLab Releases](https://gitlab.acreetionos.org/AcreetionOS/acreetionos-mate/-/releases) or [Website](https://acreetionos.org)!
 2. Create a bootable USB drive using tools like [Etcher]("https://etcher.balena.io/#download-etcher"), [Rufus]("https://rufus.ie/en/"), or [Ventoy]("https://ventoy.net/en/index.html").
 3. Boot from the USB drive and follow the installation instructions
 
@@ -58,6 +60,12 @@ To get started with AcreetionOS Linux, you can:
 ## Contributing
 
 We welcome contributions from the community! Please see our [Contributing Guide](https://github.com/AcreetionOS/acreetionos-mate/blob/main/docs/AUTOBUILD.md) file for guidelines on how to get involved.
+
+## Security Workflow
+
+The `Security Scanning & Compliance` GitHub Actions workflow supports a manual `grype_version` override.
+
+To use it, open the workflow in the Actions tab, choose `Run workflow`, and optionally pass a version tag such as `v0.62.0`.
 
 ## Roadmap
 

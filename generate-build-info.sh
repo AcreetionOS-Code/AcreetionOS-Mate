@@ -5,7 +5,8 @@
 
 set -e
 
-GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "${CI_COMMIT_SHORT_SHA:-${GITHUB_SHA:0:7:-N/A}}")
+GIT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "${CI_COMMIT_SHORT_SHA:-${GITHUB_SHA:0:7}}")
+GIT_COMMIT="${GIT_COMMIT:-N/A}"
 GIT_COMMIT_FULL=$(git rev-parse HEAD 2>/dev/null || echo "${CI_COMMIT_SHA:-${GITHUB_SHA:-N/A}}")
 BUILD_DATE=$(date -u +'%Y-%m-%d %H:%M:%S UTC')
 BUILD_DATE_EPOCH=$(date +%s)
