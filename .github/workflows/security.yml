@@ -13,6 +13,11 @@ on:
     # Daily security scan
     - cron: '0 2 * * *'
   workflow_dispatch:
+    inputs:
+      grype_version:
+        description: 'Optional grype version tag to use (e.g. v0.62.0)'
+        required: false
+        default: ''
 
 jobs:
   security-scan:
@@ -30,7 +35,7 @@ jobs:
           fetch-depth: 0
       
       - name: Run Trivy filesystem scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -39,7 +44,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
       
       - name: Run Trivy config scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'config'
           scan-ref: '.'
@@ -48,13 +53,13 @@ jobs:
           severity: 'CRITICAL,HIGH'
       
       - name: Upload Trivy results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-fs-results.sarif'
           category: 'trivy-filesystem'
       
       - name: Upload config results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v2
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-config-results.sarif'
           category: 'trivy-config'
@@ -62,16 +67,62 @@ jobs:
   dependency-check:
     runs-on: ubuntu-latest
     name: Dependency Check
+    env:
+      # Default pinned grype version; can be overridden by workflow_dispatch input
+      GRYPE_VERSION: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.grype_version != '' && github.event.inputs.grype_version || 'v0.62.0' }}
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Run Grype scan
-        uses: anchore/grype-action@v0
+      - name: Cache and install grype
+        uses: actions/cache@v4
+        id: grype-cache
         with:
-          path: packages.x86_64
-          fail-on: high
+          path: |
+            ${{ runner.temp }}/grype
+          key: grype-${{ env.GRYPE_VERSION }}-${{ runner.os }}-${{ runner.arch }}
+
+      - name: Install and run Grype
+        # Install grype binary to $HOME/.local/bin and run it. Uses cache to
+        # avoid re-downloading the binary each run.
+        run: |
+          set -euo pipefail
+          echo "Installing grype version ${GRYPE_VERSION}..."
+          ARCH=$(uname -m)
+          case "$ARCH" in
+            x86_64|amd64) GRYPE_ARCH=amd64 ;;
+            aarch64|arm64) GRYPE_ARCH=arm64 ;;
+            *) echo "Unsupported architecture: $ARCH" >&2 ; exit 1 ;;
+          esac
+          CACHE_DIR="${{ runner.temp }}/grype"
+          mkdir -p "$HOME/.local/bin"
+          mkdir -p "$CACHE_DIR"
+          if [ -x "$CACHE_DIR/grype" ]; then
+            echo "Using cached grype"
+            mv "$CACHE_DIR/grype" "$HOME/.local/bin/grype" || true
+          else
+            # Download pinned release
+            VER=${GRYPE_VERSION}
+            # allow tags with or without leading 'v'
+            TAR_NAME="grype_${VER#v}_linux_${GRYPE_ARCH}.tar.gz"
+            DOWNLOAD_URL="https://github.com/anchore/grype/releases/download/${VER}/${TAR_NAME}"
+            echo "Downloading $DOWNLOAD_URL"
+            TMPDIR=$(mktemp -d)
+            pushd "$TMPDIR"
+            curl -fsSL -o grype.tgz "$DOWNLOAD_URL"
+            tar xzf grype.tgz
+            chmod +x grype
+            mkdir -p "$HOME/.local/bin"
+            mv grype "$HOME/.local/bin/grype"
+            # cache the binary for future runs
+            cp "$HOME/.local/bin/grype" "$CACHE_DIR/"
+            popd
+            rm -rf "$TMPDIR"
+          fi
+          export PATH="$HOME/.local/bin:$PATH"
+          echo "Running grype against packages.x86_64"
+          grype packages.x86_64 --fail-on high
       
       - name: Check package licenses
         run: |
@@ -91,23 +142,23 @@ jobs:
         run: |
           echo "Validating package list syntax..."
           while IFS= read -r line; do
-            # Skip comments and empty lines
-            [[ $line =~ ^#.* ]] && continue
-            [[ -z $line ]] && continue
-            # Check for invalid characters
-            if [[ $line =~ [^a-zA-Z0-9_-] ]]; then
-              echo "Invalid package: $line"
+            # Strip inline comments and surrounding whitespace
+            pkg=$(echo "$line" | sed 's/#.*//' | tr -d ' \t')
+            [[ -z "$pkg" ]] && continue
+            # Valid Arch package name characters: a-z A-Z 0-9 _ - . + @
+            if [[ "$pkg" =~ [^a-zA-Z0-9_.+@:-] ]]; then
+              echo "Invalid package: $pkg"
               exit 1
             fi
           done < packages.x86_64
           echo "✓ All packages have valid syntax"
-      
+
       - name: Check for conflicting packages
         run: |
           echo "Checking for package conflicts..."
           conflicts=("cinnamon" "nemo" "muffin" "gnome-terminal" "gnome-shell")
           for conflict in "${conflicts[@]}"; do
-            if grep -q "^${conflict}$" packages.x86_64; then
+            if grep -E "^[[:space:]]*${conflict}([[:space:]]|#|$)" packages.x86_64 | grep -qv "^#"; then
               echo "ERROR: Found conflicting package: $conflict"
               exit 1
             fi
@@ -187,7 +238,7 @@ jobs:
           echo "✓ CycloneDX SBOM generated"
       
       - name: Upload SBOM artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sbom
           path: |
@@ -313,7 +364,7 @@ jobs:
           cat COMPLIANCE_REPORT.md
       
       - name: Upload compliance report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: compliance-report
           path: COMPLIANCE_REPORT.md
