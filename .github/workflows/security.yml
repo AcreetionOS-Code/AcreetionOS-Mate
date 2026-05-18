@@ -122,7 +122,7 @@ jobs:
           fi
           export PATH="$HOME/.local/bin:$PATH"
           echo "Running grype against packages.x86_64"
-          grype packages.x86_64 --fail-on high
+          grype packages.x86_64 --refresh --fail-on high
       
       - name: Check package licenses
         run: |
