@@ -12,7 +12,8 @@ mergeresults.txt
 
 # C objects
 *.o
-mkarchiso
+# mkarchiso compiled binary (actual wrapper binary is mkarchiso_wrapper)
+mkarchiso.bin
 
 # Generated version file
 .buildversion
