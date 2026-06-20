@@ -32,7 +32,7 @@ jobs:
           print("Checking upstream AcreetionOS releases...")
           
           result = subprocess.run(
-              ["curl", "-s", "https://api.github.com/repos/acreetionos-code/acreetionos/releases/latest"],
+              ["curl", "-s", "https://api.github.com/repos/AcreetionOS-Code/acreetionos/releases/latest"],
               capture_output=True,
               text=True
           )
@@ -67,7 +67,7 @@ jobs:
           echo "Syncing packages from upstream..."
           
           # Clone upstream repo temporarily
-          git clone --depth=1 https://github.com/acreetionos-code/acreetionos.git /tmp/upstream-acreetionos
+          git clone --depth=1 https://github.com/AcreetionOS-Code/acreetionos.git /tmp/upstream-acreetionos
           
           # Compare packages (informational only, don't auto-sync to avoid breaking MATE configs)
           echo "=== Package changes from upstream ==="
